@@ -11,6 +11,21 @@ mydb = mysql.connector.connect(
 
 cursor = mydb.cursor()
 
+def add_user(data):
+
+    cursor.execute("""insert into `users` (`name`, `d_city`, `email`, `pswd`, `phone`) values (%s, %s, %s, %s, %s)""", data)
+    mydb.commit()
+
+def verify(data):
+
+    cursor.execute("""SELECT * FROM `users` where email=%s and pswd=%s""", data)
+    return(cursor.fetchone())
+
+def add_history(data):
+
+    cursor.execute("""insert into `weather_history` (`u_id`, `city`, `created_at`) values (%s, %s, %s)""", data)
+    mydb.commit()
+
 def getkeywords():
     cursor.execute("SELECT * FROM `keywords")
     return(cursor.fetchall())
@@ -35,8 +50,5 @@ def find_keyword(inp):
             if res is not None:
                 w=i
                 break
-    print(w)
-    print(w[2],w[3])
+            
     getattr(globals()[w[2]](), w[3])()
-
-find_keyword("open google")

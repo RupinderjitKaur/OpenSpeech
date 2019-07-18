@@ -7,6 +7,7 @@ from PIL import Image,ImageTk
 from io import BytesIO
 from threading import Thread
 import speech_recognition as sr
+import time
 
 class YPanel:
 
@@ -38,7 +39,7 @@ class YPanel:
         self.srcbtn.place(x=self.xp(41), y=self.yp(10.53))
 
         self.mic_pic=PhotoImage(file="C:\\Users\\HP\\Desktop\\OpenSpeech\\mic-icon.png")
-        self.srcbtn=Button(self.panel, image=self.mic_pic, command=self.record)
+        self.srcbtn=Button(self.panel, image=self.mic_pic, command=self.record1)
         self.srcbtn.place(x=self.xp(48.09), y=self.yp(4.05))
 
         self.panel.bind("<Button-1>", self.openvideo)
@@ -46,20 +47,24 @@ class YPanel:
         
         self.panel.mainloop()
 
-    def record(self):
+    def record1(self):
+        
+        self.say_label=Label(self.panel, text="Say Something......", bg="#232323", fg="#E4E4E4", font=("Bahnschrift", self.yp(4.6)))
+        self.say_label.place(x=self.xp(60), y=self.yp(8))
+        time.sleep(1)
+        Thread(target=self.record).start()
 
+    def record(self):
+        
         r = sr.Recognizer()
         with sr.Microphone() as source:
-                print ('Say Something!')
-                audio = r.listen(source,timeout=4,phrase_time_limit=2)
-
+               audio = r.listen(source,timeout=4,phrase_time_limit=2)
         try:    
             text = r.recognize_google(audio)
-            print(text)
             self.video.set(text)
             self.search1()
         except:
-            print("Error:")
+            print("ERROR")     
 
     def xp(self, a):
         return int(a/100*self.a)
@@ -75,17 +80,16 @@ class YPanel:
         mx_vid=6
     
         keyword = self.video.get().replace(" ", "+")
-        print(keyword, "***")
         youtube = """
                 https://www.googleapis.com/youtube/v3/search?part=snippet&maxResults={}&q={}&type=video&key=AIzaSyAr1-gR4vdWQn9ZbwAqjIBbU4Gp9mznnBo
         """.format(mx_vid,keyword)
-        print(youtube)
         jdata = urllib.request.urlopen(youtube)
         data = str(jdata.read(),'utf-8')
         self.udict = json.loads(data)
         self.display()
 
     def display(self):
+        self.say_label["text"]=""
 
         mx_vid=6        
         h=self.yp(20.25)
@@ -102,7 +106,6 @@ class YPanel:
             globals()["tk_d"+str(i)].place(x=self.xp(1.3), y=h)
             
             self.thmb.append(ImageTk.PhotoImage(Image.open(BytesIO(img_data))))
-            #self.udict["items"][i]["snippet"]["thumbnails"]["default"]["url"]))
             globals()["tk_d"+str(i)].create_image(self.cx(0.67), self.cy(7), anchor='nw', image=self.thmb[i])
 
             globals()["tk_d"+str(i)].create_text(self.cx(10), self.cy(15), text=self.udict["items"][i]["snippet"]["title"], fill="#E4E4E4", font=("Bahnschrift", self.cy(20)),anchor='w')
