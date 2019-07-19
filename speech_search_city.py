@@ -4,7 +4,7 @@ import speech_recognition as sr
 
 class SearchPanel:
 
-    def __init__(self):
+    def __init__(self, u_id, theme):
 
         self.panel=Tk()
 
@@ -55,8 +55,9 @@ class SearchPanel:
 
     def submit(self):
 
-        pass
+        d = WeatherPanel(0, self.city.get(), 0) #(u_id, city, theme)
 
-x=SearchPanel()
+if __name__=="__main__":
+    d = SearchPanel(0, 0)
 
 #make the background and all font colours variable
