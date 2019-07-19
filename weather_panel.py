@@ -18,7 +18,7 @@ class WeatherPanel:
 
     def __init__(self, u_id, city, theme):
 
-        self.panel = Tk()
+        self.panel = Toplevel()
 
         self.a = self.panel.winfo_screenwidth()
         self.b = self.panel.winfo_screenheight()
@@ -89,9 +89,9 @@ class WeatherPanel:
         img = img.resize((130, 130), Image.ANTIALIAS)
         self.w_icon = ImageTk.PhotoImage(img)
 
-        self.temp = (str(self.w_dict["current"]["temp_c"]) + str(chr(176) + "C"),
+        self.temp = (str(self.w_dict["current"]["temp_c"]) + str(chr(176)) + "C",
                      str(self.w_dict["current"]["temp_f"]) + str(chr(176)) + "F")
-        self.feel = (str(self.w_dict["current"]["feelslike_c"], self.w_dict["current"]["feelslike_f"]) + str(chr(176) + "C")
+        self.feel = (str(self.w_dict["current"]["feelslike_c"]) + str(chr(176)) + "C", str(self.w_dict["current"]["feelslike_f"]) + str(chr(176)) + "F")
 
         self.precp = self.w_dict["current"]["precip_mm"]
         self.hmdt = self.w_dict["current"]["humidity"]
@@ -113,7 +113,7 @@ class WeatherPanel:
         self.t_unit = 0
 
         self.location_label = Label(self.panel, text=data[0], bg="white", fg="black", font=("Arial", self.yp(7)))
-        self.location_label.place(x=self.xp(2), y=self.yp(5))
+        self.location_label.place(x=self.xp(2), y=self.yp(4.2))
 
         self.time_label = Label(self.panel, text=data[1], bg="white", fg="black", font=("Arial", self.yp(4)))
         self.time_label.place(x=self.xp(2), y=self.yp(15))
@@ -128,34 +128,10 @@ class WeatherPanel:
                                 font=("Arial", self.yp(6)))
         self.temp_label.place(x=self.xp(12), y=self.yp(28))
 
-        '''
-
-        img = Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\degree_celsius.png")
-        img = img.resize((self.xp(8.3), self.yp(6)), Image.ANTIALIAS)
-
-        self.celsius_btn=Button(self.panel, image=img, command=self.celsius, bg="white")
-        self.celsius_btn.place(x=self.xp(22), y=self.yp(30))
-
-        img = Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\degree_farhenheit.png")
-        img = img.resize((self.xp(8.3), self.yp(6)), Image.ANTIALIAS)
-        self.farhenheit_btn=Button(self.panel, image=img, command=self.farhenheit, bg="white")
-        self.farhenheit_btn.place(x=self.xp(30), y=self.yp(30))
-        '''
-
         if data[5] is not None:
             self.feel_label = Label(self.panel, text="Feels like " + str(data[5][self.t_unit]), bg="white", fg="black",
                                     font=("Arial", self.yp(4)))
             self.feel_label.place(x=self.xp(2.5), y=self.yp(40))
-            '''
-            if(self.t_unit==0):
-                img=Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\degree_celsius.png")
-            else:
-                img=Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\degree_farhenheit.png")
-                
-            img = img.resize((self.xp(6), self.yp(4)), Image.ANTIALIAS)
-            self.feel_degree_label=Label(self.panel, image=ImageTk.PhotoImage(img))
-            self.feel_degree_label.place(x=self.xp(20), y=self.yp(42))
-            '''
 
         self.precp_label = Label(self.panel, text="Precipitation: " + str(data[6]) + " mm", bg="white", fg="black",
                                  font=("Arial", self.yp(4)))
@@ -285,8 +261,8 @@ class WeatherPanel:
 
             weather = self.w_dict["forecast"]["forecastday"][i]["day"]["condition"]["text"]
 
-            temp = ((self.w_dict["forecast"]["forecastday"][i]["day"]["avgtemp_c"],
-                     self.w_dict["forecast"]["forecastday"][i]["day"]["avgtemp_f"]))
+            temp = (str(self.w_dict["forecast"]["forecastday"][i]["day"]["avgtemp_c"])+str(chr(176))+ "C",
+                     str(self.w_dict["forecast"]["forecastday"][i]["day"]["avgtemp_f"])+str(chr(176))+ "F")
 
             precp = self.w_dict["forecast"]["forecastday"][i]["day"]["totalprecip_mm"]
             hmdt = self.w_dict["forecast"]["forecastday"][i]["day"]["avgtemp_c"]
@@ -294,10 +270,10 @@ class WeatherPanel:
 
             data = (day, weather, self.icon[i], temp, None, precp, hmdt, wind)
 
-        self.time_label["text"] = str(data[0]) + str(chr(176) + "C"
+        self.time_label["text"] = data[0]
         self.weather_label["text"] = data[1]
         self.image_label["image"] = data[2]
-        self.temp_label["text"] = data[3][self.t_unit]
+        self.temp_label["text"] = data[3][0]
 
         if data[4] is not None:
             self.feel_label["text"] = "Feels like " + str(data[4][self.t_unit])

@@ -13,7 +13,7 @@ class YPanel:
 
     def __init__(self):
 
-        self.panel=Tk()
+        self.panel=Toplevel()
         self.a = self.panel.winfo_screenwidth()
         self.b = self.panel.winfo_screenheight()
         self.c=self.xp(97)
@@ -31,6 +31,8 @@ class YPanel:
         self.ask_label=Label(self.panel, text="YouTube", bg="#232323", fg="#E4E4E4", font=("Bahnschrift SemiBold Condensed", self.yp(4.6)))
         self.ask_label.place(x=self.xp(16.9), y=self.yp(2.31))
 
+        self.say_label=Label(self.panel, text="Say Something......", bg="#232323", fg="#E4E4E4", font=("Bahnschrift", self.yp(4.6)))
+
         self.video=StringVar(self.panel)
         self.vid_entry=Entry(self.panel, bg="#393939", fg="#E4E4E4", font=("Bahnschrift", self.yp(2.89)), textvariable=self.video)
         self.vid_entry.place(x=self.xp(17.2), y=self.yp(10.4))
@@ -42,14 +44,12 @@ class YPanel:
         self.srcbtn=Button(self.panel, image=self.mic_pic, command=self.record1)
         self.srcbtn.place(x=self.xp(48.09), y=self.yp(4.05))
 
-        self.panel.bind("<Button-1>", self.openvideo)
         self.panel.state('zoomed')
         
         self.panel.mainloop()
 
     def record1(self):
         
-        self.say_label=Label(self.panel, text="Say Something......", bg="#232323", fg="#E4E4E4", font=("Bahnschrift", self.yp(4.6)))
         self.say_label.place(x=self.xp(60), y=self.yp(8))
         time.sleep(1)
         Thread(target=self.record).start()
@@ -89,14 +89,17 @@ class YPanel:
         self.display()
 
     def display(self):
+        
         self.say_label["text"]=""
-
         mx_vid=6        
         h=self.yp(20.25)
         self.thmb=[]
         self.thumbnail=[]
         self.title=[]
         self.canvas=[]
+
+        show_videos = lambda f: (lambda p: self.openvideo(f))
+        
         for i in range(mx_vid):
             img_url = self.udict["items"][i]["snippet"]["thumbnails"]["default"]["url"]
             response = requests.get(img_url)
@@ -111,6 +114,8 @@ class YPanel:
             globals()["tk_d"+str(i)].create_text(self.cx(10), self.cy(15), text=self.udict["items"][i]["snippet"]["title"], fill="#E4E4E4", font=("Bahnschrift", self.cy(20)),anchor='w')
             globals()["tk_d"+str(i)].create_text(self.cx(10), self.cy(50), text=self.udict["items"][i]["snippet"]["publishedAt"], fill="#E4E4E4", font=("Bahnschrift", self.cy(15)),anchor='w')
 
+            globals()["tk_d" + str(i)].bind("<Button-1>", show_videos(i))
+            
             h=h+self.cy(110)
 
     def cx(self, a):
@@ -119,16 +124,10 @@ class YPanel:
     def cy(self, a):
         return int(a/100*self.d)
     
-    def openvideo(self, obj):
+    def openvideo(self, i):
+        
         mx_vid = 6
-        x = self.panel.winfo_pointerx()
-        y = self.panel.winfo_pointery()
-        abs_coord_x = self.panel.winfo_pointerx() - self.panel.winfo_rootx()
-        abs_coord_y = self.panel.winfo_pointery() - self.panel.winfo_rooty()
-        if y>self.yp(20.25) and (abs_coord_x>self.xp(1.3) and abs_coord_x<self.xp(98.7) ):
-            y = abs_coord_y-self.yp(20.25)
-            y = y//self.cy(110)      
-            webbrowser.open("https://www.youtube.com/watch?v="+self.udict["items"][y]["id"]["videoId"])
+        webbrowser.open("https://www.youtube.com/watch?v="+self.udict["items"][i]["id"]["videoId"])
 if __name__=="__main__":
     d = YPanel()
         
