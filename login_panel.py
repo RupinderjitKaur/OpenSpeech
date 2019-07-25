@@ -1,6 +1,7 @@
 from tkinter import *
 from PIL import Image, ImageTk
 import main
+import navigation_pane as np
 
 from tkinter import messagebox
 
@@ -8,7 +9,7 @@ class LoginPanel:
 
     def __init__(self):
 
-        self.panel=Toplevel()
+        self.panel=Tk()
 
         self.w = self.panel.winfo_screenwidth()
         self.h = self.panel.winfo_screenheight()
@@ -56,8 +57,9 @@ class LoginPanel:
         data=(self.email.get(),self.password.get())
         result=main.verify(data)
         if result is not None:
+            main.user = result
             self.panel.destroy()
-            print(result)
+            d = np.NavigationPanel()
         else:
             self.canvas.create_text(self.xp(5), self.yp(70), text="*Incorrect Username or Password" ,fill="#9F233A", font=('Candara', self.yp(5), "bold"), anchor='nw')
 

@@ -8,9 +8,8 @@ import re
 
 class NavigationPanel:
 
-    def __init__(self, u_id):
+    def __init__(self):
 
-        self.u_id=u_id
         self.panel = Tk()
 
         self.a = self.panel.winfo_screenwidth()
@@ -40,18 +39,33 @@ class NavigationPanel:
 
         self.submit_btn=Button(self.canvas, text="Submit", command=self.submit, bg="white", fg="black", font=('Candara', self.yp(3.5), "bold"))
         self.submit_btn.place(x=self.xp(56), y=self.yp(8))
+
+        self.flag=0
         
-        self.apps={"youtube": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\you_icon.png", "open youtube"), "weather": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\weather_icon.png", ("open weather")), "under construction": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\os.png", None)}
+        self.apps={"youtube": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\you_icon.png", "open youtube"),
+                   "weather": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\weather_icon.png", "open weather"),
+                   "under construction": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\os.png", None),
+                   "google": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\google_icon.png", "open google")}
 
         self.d=self.yp(25)
         self.c=self.xp(15)
+        
+        self.app_icon=[]
+        i=0
+        for a in self.apps.keys():
+            img=Image.open(self.apps[a][0])
+            img = img.resize((self.cx(80), self.cy(65)), Image.ANTIALIAS)
+            self.app_icon.append(ImageTk.PhotoImage(img))
+        self.show_apps()
 
-        nx=self.xp(10)
+        self.panel.mainloop()
+
+    def show_apps(self):
+
+        nx=self.xp(8)
 
         i=0
-
-        self.app_icon=[]
-
+        
         open_app = lambda f: (lambda p: self.open(f))
 
         for a in self.apps.keys():
@@ -63,18 +77,11 @@ class NavigationPanel:
             if len(txt) > 10:
                 txt=txt[0:10]+".."
             globals()["canvas"+str(i)].create_text(self.cx(50), self.cy(85), text=txt, fill="#384E7E", font=("Candara", self.cy(15)), anchor="center")
-            
-            img=Image.open(self.apps[a][0])
-            img = img.resize((self.cx(80), self.cy(65)), Image.ANTIALIAS)
-            self.app_icon.append(ImageTk.PhotoImage(img))
             globals()["canvas"+str(i)].create_image(self.cx(50), self.cy(37.5), anchor='center', image=self.app_icon[i])
-
             globals()["canvas" + str(i)].bind("<Button-1>", open_app(a))
             
-            nx+=self.xp(32.5)
+            nx+=self.xp(23)
             i=i+1
-
-        self.panel.mainloop()
 
     def xp(self, a):
         return int(a / 100 * self.a)
@@ -91,7 +98,13 @@ class NavigationPanel:
         return int((a * self.d) / 100)
 
     def submit(self):
-
+        
+        self.flag=1
+        i=0
+        for a in self.apps.keys():
+            globals()["canvas"+str(i)].destroy()
+            i=i+1
+            
         inp=self.app_searched.get().lower()
         j=None
         for i in self.apps.keys():
@@ -100,16 +113,25 @@ class NavigationPanel:
                 j=i
                 break
         if j is None:
-            print("App Not Found")
-        i=0
-        for a in self.apps.keys():
-            if a!=j:
-                globals()["canvas"+str(i)].destroy()
-            else:
-                globals()["canvas"+str(i)].place(x=self.xp(10), y=self.yp(40))
-            i=i+1
-                
+            self.app_searched.set("App Not Found")
+            self.show_apps()
+            
+        else:
+            open_app = lambda f: (lambda p: self.open(f))
+            globals()["canvas"+str(0)]=Canvas(self.panel, height=self.d, width=self.c, bg="white")
+            globals()["canvas"+str(0)].place(x=self.xp(10), y=self.yp(40))
 
+            txt=j.capitalize()
+            if len(txt) > 10:
+                txt=txt[0:10]+".."
+            globals()["canvas"+str(0)].create_text(self.cx(50), self.cy(85), text=txt, fill="#384E7E", font=("Candara", self.cy(15)), anchor="center")
+            
+            globals()["img"+str(0)]=Image.open(self.apps[j][0])
+            globals()["img"+str(0)] = globals()["img"+str(0)].resize((self.cx(80), self.cy(65)), Image.ANTIALIAS)
+            globals()["img"+str(0)] = ImageTk.PhotoImage(globals()["img"+str(0)])
+            globals()["canvas"+str(0)].create_image(self.cx(50), self.cy(37.5), anchor='center', image=globals()["img"+str(0)])
+            globals()["canvas" + str(0)].bind("<Button-1>", open_app(j))
+            
     def listen(self):
 
         r = sr.Recognizer()
@@ -123,9 +145,8 @@ class NavigationPanel:
             print("ERROR")
 
     def open(self, a):
-
+        
+        if self.flag:
+            self.show_apps()
         if self.apps[a][1] is not None:
             main.find_keyword(self.apps[a][1])
-            
-if __name__ == "__main__":
-    d = NavigationPanel(0)

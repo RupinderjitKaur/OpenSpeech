@@ -47,6 +47,7 @@ class FirstPanel:
         x=sp.SignupPanel()
 
     def log(self):
+        self.panel.destroy()
         x=lp.LoginPanel()  
 
 x=FirstPanel()

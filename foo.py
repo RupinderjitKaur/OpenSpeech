@@ -1,6 +1,7 @@
 import webbrowser
 import youtube_search_panel as ysp
 import search_city as sc
+import main
 
 class openbrowser:
     
@@ -9,7 +10,7 @@ class openbrowser:
 
     def openyoutube(self):
 
-        y=ysp.YPanel()
+        y=ysp.YPanel(main.user)
 
     def opengoogle(self):
         
@@ -22,4 +23,4 @@ class openapp:
 
     def openweather(self):
 
-        y=sc.SearchPanel(0, 0)
+        y=sc.SearchPanel(main.user)

@@ -1,7 +1,7 @@
 from foo import *
 import mysql.connector
 import re
-
+user = []
 mydb = mysql.connector.connect(
         host="localhost",
         user="root",

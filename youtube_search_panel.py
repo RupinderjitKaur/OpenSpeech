@@ -11,7 +11,7 @@ import time
 
 class YPanel:
 
-    def __init__(self):
+    def __init__(self, u_id):
 
         self.panel=Toplevel()
         self.a = self.panel.winfo_screenwidth()
@@ -129,5 +129,5 @@ class YPanel:
         mx_vid = 6
         webbrowser.open("https://www.youtube.com/watch?v="+self.udict["items"][i]["id"]["videoId"])
 if __name__=="__main__":
-    d = YPanel()
+    d = YPanel(0)
         

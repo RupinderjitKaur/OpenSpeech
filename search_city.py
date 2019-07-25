@@ -5,7 +5,7 @@ import weather_panel as wp
 
 class SearchPanel:
 
-    def __init__(self, u_id, theme):
+    def __init__(self, user, theme):
 
         self.panel=Toplevel()
 
@@ -57,6 +57,8 @@ class SearchPanel:
 
     def submit(self):
 
+        if self.city.get()=='':
+            self.city.set(user[2])
         d = wp.WeatherPanel(0, self.city.get(), 0) #(u_id, city, theme)
 
 if __name__=="__main__":
