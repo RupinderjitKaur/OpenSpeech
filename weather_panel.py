@@ -16,7 +16,7 @@ text_color = "black"
 
 class WeatherPanel:
 
-    def __init__(self, u_id, city, theme):
+    def __init__(self, user, city):
 
         self.panel = Toplevel()
 
@@ -29,7 +29,7 @@ class WeatherPanel:
         self.panel.state('zoomed')
         self.panel.config(bg="white")
 
-        self.u_id = u_id
+        self.user = user
         self.city = city
 
         self.get_info()
@@ -56,9 +56,9 @@ class WeatherPanel:
         current_time = datetime.datetime.now(pytz.timezone('Asia/Calcutta'))
         current_time = str(current_time).split(" ")
 
-        data = (self.u_id, self.city)
+        data = (self.user[0], self.city)
 
-        # main.add_history(data)
+        main.add_weather_history(data)
 
         self.location = self.w_dict["location"]["name"] + ", " + self.w_dict["location"]["region"] + ", " + \
                         self.w_dict["location"]["country"]
@@ -287,4 +287,4 @@ class WeatherPanel:
 
 
 if __name__ == "__main__":
-    d = WeatherPanel(0, "Jalandhar", 0)
+    d = WeatherPanel(0, "Jalandhar")

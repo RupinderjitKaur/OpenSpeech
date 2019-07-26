@@ -21,10 +21,22 @@ def verify(data):
     cursor.execute("""SELECT * FROM `users` where email=%s and pswd=%s""", data)
     return(cursor.fetchone())
 
-def add_history(data):
+def add_weather_history(data):
 
     cursor.execute("""insert into `weather_history` (`u_id`, `city`) values (%s, %s)""", data)
     mydb.commit()
+
+def add_youtube_history(data):
+
+    cursor.execute("""insert into `youtube_history` (`u_id`, `video_id`, `title`, `img_url`, `published_at`) values (%s, %s, %s, %s, %s)""", data)
+    mydb.commit()
+
+def get_youtube_recents(*u_id):
+
+    cursor.execute("""SELECT `video_id`, `title`, `img_url`, `published_at` from `youtube_history` where `u_id`=%s order by `created_at` desc limit 6""", u_id)
+    return(cursor.fetchall())
+
+'''
 
 def get_all_history(*u_id):
 
@@ -40,6 +52,8 @@ def get_city_specific_history(data):
 
     cursor.execute("""SELECT `created_at` FROM `weather_history` where `u_id`=%s and city=%s""", data)
     return(cursor.fetchall())
+
+'''
 
 def getkeywords():
     

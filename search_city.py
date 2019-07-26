@@ -5,9 +5,10 @@ import weather_panel as wp
 
 class SearchPanel:
 
-    def __init__(self, user, theme):
+    def __init__(self, user):
 
         self.panel=Toplevel()
+        self.user=user
 
         self.w = self.panel.winfo_screenwidth()
         self.h = self.panel.winfo_screenheight()
@@ -58,10 +59,10 @@ class SearchPanel:
     def submit(self):
 
         if self.city.get()=='':
-            self.city.set(user[2])
-        d = wp.WeatherPanel(0, self.city.get(), 0) #(u_id, city, theme)
+            self.city.set(self.user[2])
+        d = wp.WeatherPanel(self.user, self.city.get())
 
 if __name__=="__main__":
-    d = SearchPanel(0, 0)
+    d = SearchPanel(0)
 
 #make the background and all font colours variable

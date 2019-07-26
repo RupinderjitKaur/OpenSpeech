@@ -39,8 +39,6 @@ class NavigationPanel:
 
         self.submit_btn=Button(self.canvas, text="Submit", command=self.submit, bg="white", fg="black", font=('Candara', self.yp(3.5), "bold"))
         self.submit_btn.place(x=self.xp(56), y=self.yp(8))
-
-        self.flag=0
         
         self.apps={"youtube": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\you_icon.png", "open youtube"),
                    "weather": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\weather_icon.png", "open weather"),
@@ -61,6 +59,8 @@ class NavigationPanel:
         self.panel.mainloop()
 
     def show_apps(self):
+
+        self.flag=0
 
         nx=self.xp(8)
 
@@ -147,6 +147,7 @@ class NavigationPanel:
     def open(self, a):
         
         if self.flag:
+            globals()["canvas" + str(0)].destroy()
             self.show_apps()
         if self.apps[a][1] is not None:
             main.find_keyword(self.apps[a][1])
