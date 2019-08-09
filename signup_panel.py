@@ -68,7 +68,7 @@ class SignupPanel:
         
     def sign(self):
 
-        data=(self.name.get(), self.city.get(), self.email.get(), self.password.get(), self.phone.get())
+        data=(self.name.get(), self.city.get(), self.email.get(), self.password.get(), self.phone.get(), True)
         if self.name.get()=="" or self.city.get()=="" or self.email.get()=="" or self.password.get()=="":
             self.canvas.create_text(self.xp(5), self.yp(70), text="*Incorrect Username or Password" ,fill="#9F233A", font=('Candara', self.yp(5), "bold"), anchor='nw')
         else:
@@ -80,7 +80,6 @@ class SignupPanel:
             self.password.set("")
             self.phone.set("")
             self.panel.destroy()
-
         
         
      

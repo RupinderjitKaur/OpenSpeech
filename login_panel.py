@@ -56,6 +56,8 @@ class LoginPanel:
 
         data=(self.email.get(),self.password.get())
         result=main.verify(data)
+        if result=='false':
+            self.canvas.create_text(self.xp(5), self.yp(70), text="*You have been Blocked" ,fill="#9F233A", font=('Candara', self.yp(5), "bold"), anchor='nw')
         if result is not None:
             main.user = result
             self.panel.destroy()

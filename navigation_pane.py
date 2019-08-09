@@ -5,6 +5,7 @@ from threading import Thread
 import main
 import speech_recognition as sr
 import re
+from foo import *
 
 class NavigationPanel:
 
@@ -40,10 +41,7 @@ class NavigationPanel:
         self.submit_btn=Button(self.canvas, text="Submit", command=self.submit, bg="white", fg="black", font=('Candara', self.yp(3.5), "bold"))
         self.submit_btn.place(x=self.xp(56), y=self.yp(8))
         
-        self.apps={"youtube": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\you_icon.png", "open youtube"),
-                   "weather": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\weather_icon.png", "open weather"),
-                   "under construction": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\os.png", None),
-                   "google": ("C:\\Users\\HP\\Desktop\\OpenSpeech\\google_icon.png", "open google")}
+        self.apps=main.get_app_dictionary()
 
         self.d=self.yp(25)
         self.c=self.xp(15)
@@ -113,6 +111,8 @@ class NavigationPanel:
                 j=i
                 break
         if j is None:
+            tup = (main.user[0], self.app_searched.get())
+            main.add_unknowns(tup)
             self.app_searched.set("App Not Found")
             self.show_apps()
             
@@ -145,9 +145,7 @@ class NavigationPanel:
             print("ERROR")
 
     def open(self, a):
-        
         if self.flag:
             globals()["canvas" + str(0)].destroy()
             self.show_apps()
-        if self.apps[a][1] is not None:
-            main.find_keyword(self.apps[a][1])
+        getattr(globals()[self.apps[a][1]](), self.apps[a][2])()

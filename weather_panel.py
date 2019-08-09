@@ -68,8 +68,14 @@ class WeatherPanel:
         lt = local_time.split(" ")
         self.days = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday",
                      "Sat": "Saturday", "Sun": "Sunday"}
+        print("lt: ", str(lt))
         day = self.days[lt[0]]
-        t = lt[3].split(":")
+        print("day: ", day)
+        if(lt[2]==' '):
+            t=lt[4].split(":")
+        else:
+            t = lt[3].split(":")
+        print(t)
         if int(t[0]) == 0:
             tm = "12." + str(t[1]) + " am"
         elif int(t[0]) < 12:
