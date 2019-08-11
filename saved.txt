@@ -18,18 +18,21 @@ class WeatherPanel:
 
     def __init__(self, user, city):
 
+        self.panel = Toplevel()
+
+        self.a = self.panel.winfo_screenwidth()
+        self.b = self.panel.winfo_screenheight()
+
+        self.panel.geometry('{}x{}'.format(self.b, self.a))
+        self.panel.title("Weather Report")
+        self.panel.resizable(height=False, width=False)
+        self.panel.state('zoomed')
+        self.panel.config(bg="white")
+
         self.user = user
         self.city = city
+
         self.get_info()
-        
-        self.window = Toplevel()
-        self.a = self.window.winfo_screenwidth()
-        self.b = self.window.winfo_screenheight()
-        self.window.geometry('{}x{}'.format(self.b, self.a))
-        self.window.title("Weather Report")
-        self.window.resizable(height=False, width=False)
-        self.window.state('zoomed')
-        self.window.config(bg="blue")
 
         self.panel.mainloop()
 
@@ -65,11 +68,14 @@ class WeatherPanel:
         lt = local_time.split(" ")
         self.days = {"Mon": "Monday", "Tue": "Tuesday", "Wed": "Wednesday", "Thu": "Thursday", "Fri": "Friday",
                      "Sat": "Saturday", "Sun": "Sunday"}
+        print("lt: ", str(lt))
         day = self.days[lt[0]]
+        print("day: ", day)
         if(lt[2]==' '):
             t=lt[4].split(":")
         else:
             t = lt[3].split(":")
+        print(t)
         if int(t[0]) == 0:
             tm = "12." + str(t[1]) + " am"
         elif int(t[0]) < 12:
@@ -81,8 +87,6 @@ class WeatherPanel:
         self.time = day + ", " + tm
 
         self.weather = self.w_dict["current"]["condition"]["text"]
-
-        self.theme=main.usetheme(self.weather)
 
         img_url = "http:" + self.w_dict["current"]["condition"]["icon"]
         response = requests.get(img_url)
@@ -99,7 +103,8 @@ class WeatherPanel:
         self.hmdt = self.w_dict["current"]["humidity"]
         self.wind = self.w_dict["current"]["wind_kph"]
 
-        data = (self.location, self.time, self.weather, self.w_icon, self.temp, self.feel, self.precp, self.hmdt, self.wind)
+        data = (
+        self.location, self.time, self.weather, self.w_icon, self.temp, self.feel, self.precp, self.hmdt, self.wind)
 
         self.display(data)
 
@@ -111,25 +116,40 @@ class WeatherPanel:
 
     def display(self, data):
 
-        self.panel=Canvas(self.window, height=self.a, width=self.b)
-        img = Image.open(self.theme[0])
-        img = img.resize((self.a, self.b), Image.ANTIALIAS)
-        self.panel.create_image(0, 0, anchor='nw', image=ImageTk.PhotoImage(img))
-
         self.t_unit = 0
 
-        self.panel.create_text(self.xp(2), self.yp(4.2), text=data[0], fill=theme[8], font=("Arial", self.yp(7)))
-        self.panel.create_text(self.xp(2), self.yp(15), text=data[1], fill=theme[8], font=("Arial", self.yp(4)))
-        self.panel.create_text(self.xp(2), self.yp(21.5), text=data[2], fill=theme[8], font=("Arial", self.yp(4)))
-        self.panel.create_image(self.xp(2), self.yp(25), image=data[3], anchor='nw')
-        self.panel.create_text(self.xp(12), self.yp(28), text=data[4][self.t_unit], fill=theme[8], font=("Arial", self.yp(6)))
-        
-        if data[5] is not None:
-            self.panel.create_text(self.xp(2.5), self.yp(40), text="Feels like " + str(data[5][self.t_unit]), fill=theme[8], font=("Arial", self.yp(4)))
+        self.location_label = Label(self.panel, text=data[0], bg="white", fg="black", font=("Arial", self.yp(7)))
+        self.location_label.place(x=self.xp(2), y=self.yp(4.2))
 
-        self.panel.create_text(self.xp(65), self.yp(28), text="Precipitation: " + str(data[6]) + " mm", fill=theme[8], font=("Arial", self.yp(4)))
-        self.panel.create_text(self.xp(65), self.yp(34), text="Humidity: " + str(data[7]) + "%", fill=theme[8], font=("Arial", self.yp(4)))
-        self.panel.create_text(self.xp(65), self.yp(40), text="Wind: " + str(data[8]) + " km/h", fill=theme[8], font=("Arial", self.yp(4)))
+        self.time_label = Label(self.panel, text=data[1], bg="white", fg="black", font=("Arial", self.yp(4)))
+        self.time_label.place(x=self.xp(2), y=self.yp(15))
+
+        self.image_label = Label(self.panel, image=data[3], bg="white")
+        self.image_label.place(x=self.xp(2), y=self.yp(25))
+
+        self.weather_label = Label(self.panel, text=data[2], bg="white", fg="black", font=("Arial", self.yp(4)))
+        self.weather_label.place(x=self.xp(2), y=self.yp(21.5))
+
+        self.temp_label = Label(self.panel, text=data[4][self.t_unit], bg="white", fg="black",
+                                font=("Arial", self.yp(6)))
+        self.temp_label.place(x=self.xp(12), y=self.yp(28))
+
+        if data[5] is not None:
+            self.feel_label = Label(self.panel, text="Feels like " + str(data[5][self.t_unit]), bg="white", fg="black",
+                                    font=("Arial", self.yp(4)))
+            self.feel_label.place(x=self.xp(2.5), y=self.yp(40))
+
+        self.precp_label = Label(self.panel, text="Precipitation: " + str(data[6]) + " mm", bg="white", fg="black",
+                                 font=("Arial", self.yp(4)))
+        self.precp_label.place(x=self.xp(65), y=self.yp(28))
+
+        self.hmdt_label = Label(self.panel, text="Humidity: " + str(data[7]) + "%", bg="white", fg="black",
+                                font=("Arial", self.yp(4)))
+        self.hmdt_label.place(x=self.xp(65), y=self.yp(34))
+
+        self.wind_label = Label(self.panel, text="Wind: " + str(data[8]) + " km/h", bg="white", fg="black",
+                                font=("Arial", self.yp(4)))
+        self.wind_label.place(x=self.xp(65), y=self.yp(40))
 
         nx = self.xp(1.5)
 
@@ -146,19 +166,15 @@ class WeatherPanel:
         show_data = lambda f: (lambda p: self.show(f))
 
         for i in range(0, self.max_days):
-            
-            globals()["canvas" + str(i)] = Canvas(self.panel, height=self.d, width=self.c)
-            globals()["canvas" + str(i)].place(x=nx, y=self.yp(50))
 
-            img = Image.open(self.theme[1+i])
-            img = img.resize((self.c, self.d), Image.ANTIALIAS)
-            globals()["canvas" + str(i)].create_image(self.cx(0), self.cy(0), anchor='nw', image=ImageTk.PhotoImage(img))
+            globals()["canvas" + str(i)] = Canvas(self.panel, height=self.d, width=self.c, bg="white")
+            globals()["canvas" + str(i)].place(x=nx, y=self.yp(50))
 
             seconds = self.w_dict["forecast"]["forecastday"][i]["date_epoch"]
             local_time = time.ctime(seconds)
             lt = local_time.split(" ")
 
-            globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(9.65), text=lt[0], fill=theme[8],
+            globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(9.65), text=lt[0], fill="black",
                                                      font=("Arial", self.cy(8.3)), anchor="center")
 
             img_url = "http:" + self.w_dict["forecast"]["forecastday"][i]["day"]["condition"]["icon"]
@@ -177,14 +193,14 @@ class WeatherPanel:
                     text = weather_text1.rsplit(" ", 1)
                     weather_text1 = text[0]
                     weather_text2 = " " + text[1] + weather_text2
-                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(59.24), text=weather_text1, fill=theme[8],
+                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(59.24), text=weather_text1, fill="black",
                                                          font=("Arial", self.cy(4.2)), anchor='center')
-                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(64.75), text=weather_text2, fill=theme[8],
+                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(64.75), text=weather_text2, fill="black",
                                                          font=("Arial", self.cy(4.2)), anchor='center')
                 h = self.cy(5.51)
 
             else:
-                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(59.24), text=weather_text1, fill=theme[8],
+                globals()["canvas" + str(i)].create_text(self.cx(50), self.cy(59.24), text=weather_text1, fill="black",
                                                          font=("Arial", self.cy(4.2)), anchor='center')
                 h = 0
 
@@ -193,8 +209,10 @@ class WeatherPanel:
             self.min.append((self.w_dict["forecast"]["forecastday"][i]["day"]["mintemp_c"],
                              self.w_dict["forecast"]["forecastday"][i]["day"]["mintemp_f"]))
 
-            globals()["canvas" + str(i)].create_text(self.cx(50), h + self.cy(67.51), text=str(self.max[i][self.t_unit]) + "   " +
-                                                     str(self.min[i][self.t_unit]), fill=theme[8], font=("Arial", self.cy(5.51)), anchor='center')
+            globals()["canvas" + str(i)].create_text(self.cx(50), h + self.cy(67.51),
+                                                     text=str(self.max[i][self.t_unit]) + "   " + str(
+                                                         self.min[i][self.t_unit]), fill="black",
+                                                     font=("Arial", self.cy(5.51)), anchor='center')
 
             img = Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\sunrise.png")
             img = img.resize((self.cx(17.6), self.cy(6.89)), Image.ANTIALIAS)
@@ -204,7 +222,7 @@ class WeatherPanel:
 
             globals()["canvas" + str(i)].create_text(self.cx(32.56), h + self.cy(75.78),
                                                      text=self.w_dict["forecast"]["forecastday"][i]["astro"]["sunrise"],
-                                                     fill=theme[8], font=("Arial", self.cy(4.2)), anchor='nw')
+                                                     fill="black", font=("Arial", self.cy(4.2)), anchor='nw')
 
             img = Image.open("C:\\Users\\HP\\Desktop\\OpenSpeech\\sunset.png")
             img = img.resize((self.cx(17.6), self.cy(6.89)), Image.ANTIALIAS)
@@ -214,7 +232,7 @@ class WeatherPanel:
 
             globals()["canvas" + str(i)].create_text(self.cx(32.56), h + self.cy(82.67),
                                                      text=self.w_dict["forecast"]["forecastday"][i]["astro"]["sunset"],
-                                                     fill=theme[8], font=("Arial", self.cy(4.2)), anchor='nw')
+                                                     fill="black", font=("Arial", self.cy(4.2)), anchor='nw')
             globals()["canvas" + str(i)].bind("<Button-1>", show_data(i))
             nx += self.xp(14)
 

@@ -5,6 +5,8 @@ import navigation_pane as np
 import AdminProfileEdit as ape
 import UserSearchedKeywords as usk
 import NewAdmin
+import ThemePanel as tp
+import Block_Window as bw
 
 from tkinter import messagebox
 
@@ -33,16 +35,19 @@ class AdminNavigationPanel:
         self.change_admin_settings.place(x=self.xp(50), y=self.yp(10))
 
         self.add_admin=Button(self.canvas, text="Add an Admin", command=self.new_admin, anchor="center")
-        self.add_admin.place(x=self.xp(50), y=self.yp(30))
+        self.add_admin.place(x=self.xp(50), y=self.yp(25))
 
         self.add_app=Button(self.canvas, text="Add an Application", command=self.new_app, anchor="center")
-        self.add_app.place(x=self.xp(50), y=self.yp(50))
+        self.add_app.place(x=self.xp(50), y=self.yp(40))
 
         self.see_searches=Button(self.canvas, text="See Unfound Searche Keywords", command=self.search, anchor="center")
-        self.see_searches.place(x=self.xp(50), y=self.yp(70))
+        self.see_searches.place(x=self.xp(50), y=self.yp(55))
 
         self.block_btn=Button(self.canvas, text="Block a Malicious User", command=self.block, anchor="center")
         self.block_btn.place(x=self.xp(50), y=self.yp(70))
+
+        self.theme_btn=Button(self.canvas, text="Add a Theme", command=self.theme, anchor="center")
+        self.theme_btn.place(x=self.xp(50), y=self.yp(85))
         
         self.panel.mainloop()
 
@@ -68,5 +73,9 @@ class AdminNavigationPanel:
         d=usk.SearchedKeywords()
 
     def block(self):
-        #blocking window
-        pass
+        self.panel.destroy()
+        d=bw.BlockUser(self.ad_id)
+        
+    def theme(self):
+        self.panel.destroy()
+        d=tp.AddTheme(self.ad_id)

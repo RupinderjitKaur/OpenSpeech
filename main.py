@@ -11,6 +11,31 @@ mydb = mysql.connector.connect(
 
 cursor = mydb.cursor()
 
+def addtheme(data):
+
+    cursor.execute("""insert into `weather_themes` (`weather`, `bacground`, `canvas1`, `canvas2`, `canvas3`, `canvas4`, `canvas5`, `canvas6`, `canvas7`, `font`)
+    values (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", data)
+    mydb.commit()
+
+def usetheme(weather):
+
+    cursor.execute("""SELECT `srno`, `weather` FROM `weather_themes`""")
+    result=cursor.fetchall()
+
+    weather=weather.lower()
+
+    id_=None
+    for i in result:
+        res=re.search(i[1], weather)
+        if res is not None:
+            id_=i[0]
+            break
+    if id_==None:
+        id_=1
+    result=(id_)
+    cursor.execute("""SELECT `bacground`, `canvas1`, `canvas2`, `canvas3`, `canvas4`, `canvas5`, `canvas6`, `canvas7`, `font` FROM `weather_themes` where `srno`=%s""", result)
+    return(cursor.fetchone())
+
 def get_apps():
     cursor.execute("""SELECT `app_id`, `name` FROM `applications`""")
     return(cursor.fetchall())
@@ -31,6 +56,16 @@ def get_app_dictionary():
         prmts=get_app_parameters(i[0])
         app_dict[i[1]]=(path[0], prmts[0], prmts[1])
     return app_dict
+
+def block_user(data):
+
+    cursor.execute("""update `users` set `allowed_status`=false where `email`=%s""", data)
+    mydb.commit()
+
+def unblock_user(data):
+
+    cursor.execute("""update `users` set `allowed_status`=true where `email`=%s""", data)
+    mydb.commit()
 
 def add_user(data):
 
@@ -87,12 +122,12 @@ def add_unknowns(data):
 
 def get_unknown_keywords():
     
-    cursor.execute("""SELECT * FROM `unknown_keywords""")
+    cursor.execute("""SELECT * FROM `unknown_keywords`""")
     return(cursor.fetchall())
 
 def getkeywords():
     
-    cursor.execute("""SELECT * FROM `keywords""")
+    cursor.execute("""SELECT * FROM `keywords`""")
     return(cursor.fetchall())
 
 def find_keyword(inp):
